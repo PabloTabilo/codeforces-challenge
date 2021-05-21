@@ -28,31 +28,35 @@ int gcd(int a, int b){
     return gcd(b,a%b);
 }
 
-int main(){
-    int n;
-    cin>>n;
-    int res=1;
-    int cont=1;
-    while(n>res){
-        cont++;
-        res=cont*cont;
-    }
-    //cout<<"cont: "<<cont<<endl;
-    //cout<<"res post while: "<<res<<endl;
-    //if(n==2)
-    //    cout<<6;
-    //else if(n==3)
-    //    cout<<8;
-    if(n%res==0)
-        cout<<cont*4;
-    else{
-        res = (cont-1)*(cont-1);
-        int add = (n-res)/(cont-1);
-        res = (cont-1)*4 + ((n-res)%(cont-1)==0?add:add+1)*2;
-        //cout<<"res mod: "<<res<<endl;
-        cout<<res;
+void prV(vector<int> A, int n){
+    for(int i=0;i<n;i++){
+        cout<<A[i]<<" ";
     }
     cout<<endl;
+}
+
+int main(){
+    int n, k;
+    cin>>n>>k;
+    cin.ignore();
+    int a;
+    vector <int> A;
+    while(cin>>a){
+        A.push_back(a);
+    }
+    if (n>1){
+        for(int i=0;i<n-1;i++){
+            if(A[i]+A[i+1]<k){
+                if(A[i]>=A[i+1]){
+
+                }
+            }
+        }
+    }else{
+        if (A[0]>=k)
+            cout<<0<<endl;
+    }
+    prV(A,n);
     return 0;
 }
 

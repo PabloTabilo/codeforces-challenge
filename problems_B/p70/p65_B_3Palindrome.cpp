@@ -31,28 +31,28 @@ int gcd(int a, int b){
 int main(){
     int n;
     cin>>n;
-    int res=1;
-    int cont=1;
-    while(n>res){
-        cont++;
-        res=cont*cont;
+    string res="";
+    int i=0;
+    bool a1=true, a2=false, b1=false;
+    while(i<n){
+        if(a1){
+            res+="a";
+            a1 = false;
+            a2 = true;
+        }else if(a2){
+            res+="a";
+            b1=true;
+            a2=false;
+        }else if(b1){
+            res+="b";
+            b1=false;
+        }else{
+            res+="b";
+            a1=true;
+        }
+        i++;
     }
-    //cout<<"cont: "<<cont<<endl;
-    //cout<<"res post while: "<<res<<endl;
-    //if(n==2)
-    //    cout<<6;
-    //else if(n==3)
-    //    cout<<8;
-    if(n%res==0)
-        cout<<cont*4;
-    else{
-        res = (cont-1)*(cont-1);
-        int add = (n-res)/(cont-1);
-        res = (cont-1)*4 + ((n-res)%(cont-1)==0?add:add+1)*2;
-        //cout<<"res mod: "<<res<<endl;
-        cout<<res;
-    }
-    cout<<endl;
+    cout<<res<<endl;
     return 0;
 }
 
