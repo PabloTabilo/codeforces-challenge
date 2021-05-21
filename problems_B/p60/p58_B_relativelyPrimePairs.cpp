@@ -29,8 +29,13 @@ int gcd(int a, int b){
 }
 
 int main(){
-    int l, r;
+    ll l, r;
     cin>>l>>r;
+    cout<<"YES"<<endl;
+    while(l<r+1){
+        cout<<l<<" "<<l+1<<endl;
+        l+=2;
+    }
     return 0;
 }
 
