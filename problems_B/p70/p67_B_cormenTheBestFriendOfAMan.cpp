@@ -34,27 +34,59 @@ void prV(vector<int> A, int n){
     }
     cout<<endl;
 }
+int totalMin=99999;
+vector<int> vres;
+int solve(vector<int> A, int l, int k, int n, int totMin){
+    if(l<n){
+        int res = A[l] + A[l+1];
+        int posPairs = (k - res>0?k-res:0);
+        int i=0;
+        int j=posPairs;
+        totMin+=posPairs;
+        cout<<"l: "<<l<<endl;
+        cout<<"totMin: "<<totMin<<endl;
+        while(i <= posPairs){
+            A[l]+=i;
+            A[l+1]+=j;
+            i++;
+            j--;
+            prV(A, n);
+            int newTot = solve(A,l+1, k, n, totMin);
+            if(totalMin > newTot){
+                totalMin = newTot;
+                vres = A;
+            }
+        }
+    }
+    return totMin;
+}
 
 int main(){
     int n, k;
     cin>>n>>k;
     cin.ignore();
-    int a;
+    int a, va;
     vector <int> A;
-    while(cin>>a){
+    for(int i=0;i<n;i++){
+        cin>>a;
         A.push_back(a);
     }
     if (n>1){
-        for(int i=0;i<n-1;i++){
-            if(A[i]+A[i+1]<k){
-                if(A[i]>=A[i+1]){
-
-                }
-            }
+        //solve(A, 0, k, n, 0);
+        //cout<<totalMin<<endl;
+        //prV(vres, n);
+        int ac=0;
+        for(int i=1;i<n;i++){
+            va = max(0, k - A[i] - A[i-1]);
+            ac += va;
+            A[i] += va;
         }
+        cout<<ac<<endl;
     }else{
-        if (A[0]>=k)
-            cout<<0<<endl;
+        //va = max(0, k - A[0]);
+        //cout<<va<<endl;
+        //A[0] += va;
+        cout<<0<<endl;
     }
     prV(A,n);
     return 0;
