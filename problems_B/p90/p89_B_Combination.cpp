@@ -45,27 +45,42 @@ void pAr(int A[], int n){
 }
 
 int main(){
-    string s;
-    getline(cin, s);
-    int n = s.size();
-    char l;
-    int n4 = 0, n7 = 0;
-    for(int i = 0; i<n;i++){
-        l = s[i];
-        if(l == '4')
-            n4++;
-        else if(l == '7')
-            n7++;
+    int n, a, b;
+    priority_queue<pair<int, int> > pq;
+    vector<int> v;
+    pair <int, int> p;
+    cin>>n;
+    for(int i = 0;i<n;i++){
+        cin>>a>>b;
+        p.first = b;
+        p.second = a;
+        pq.push(p);
     }
-    if(n4 + n7 == 0)
-        cout<<-1;
-    else if(n4 == n7)
-        cout<<4;
-    else if(n7 > n4)
-        cout<<7;
-    else
-        cout<<4;
-    cout<<endl;
+    int nt = 1;
+    int res = 0;
+    int tp = -1;
+    bool foundNotb = false;
+    while(!pq.empty()){
+        p = pq.top();
+        tp = p.first;
+        if(tp == 0 && !foundNotb){
+            foundNotb = true;
+        }else if(tp != 0 && !foundNotb){
+            nt--;
+            nt += p.first;
+            res += p.second;
+        }
+        if(foundNotb){
+            v.push_back(p.second);
+        }
+        pq.pop();
+    }
+    sort(v.begin(), v.end(), greater<int>());
+    int s = (v.size()<=nt?v.size():nt);
+    for(int i=0;i<s;i++){
+        res += v[i];
+    }
+    cout<<res<<endl;
     return 0;
 }
 

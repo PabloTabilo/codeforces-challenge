@@ -45,26 +45,49 @@ void pAr(int A[], int n){
 }
 
 int main(){
+    int n, a;
+    int minf1 = 99999;
+    int minf2 = 99999;
+    bool pos = true;
+    vector<int> v1;
+    vector<int> v2;
     string s;
+    cin>>n;
+    cin.ignore();
     getline(cin, s);
-    int n = s.size();
-    char l;
-    int n4 = 0, n7 = 0;
-    for(int i = 0; i<n;i++){
-        l = s[i];
-        if(l == '4')
-            n4++;
-        else if(l == '7')
-            n7++;
+    for(int i=0;i<2*n;i++){
+        a = s[i]-'0';
+        if(i<n){
+            v1.push_back(a);
+            if(minf1 > a)
+                minf1 = a;
+        }else{
+            v2.push_back(a);
+            if(minf2 > a)
+                minf2 = a;
+        }
     }
-    if(n4 + n7 == 0)
-        cout<<-1;
-    else if(n4 == n7)
-        cout<<4;
-    else if(n7 > n4)
-        cout<<7;
+    sort(v1.begin(), v1.end());
+    sort(v2.begin(), v2.end());
+    //pV(v1, n);
+    //pV(v2, n);
+    if(minf1 < minf2){
+        for(int i = 0;i<n; i++){
+            if(v1[i] >= v2[i])
+                pos = false;
+        }
+    }else if(minf1 > minf2){
+        for(int i = 0;i<n; i++){
+            if(v1[i] <= v2[i])
+                pos = false;
+        }
+    }else{
+        pos = false;
+    }
+    if(pos)
+        cout<<"YES";
     else
-        cout<<4;
+        cout<<"NO";
     cout<<endl;
     return 0;
 }
