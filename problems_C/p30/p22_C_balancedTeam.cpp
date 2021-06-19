@@ -62,63 +62,54 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
-unordered_map<ll, vector<ll> >um;
-unordered_map<ll, ll> sm;
+ll bs(vector<int>v, ll l, ll r, ll k){
+    if(l<r){
+        ll m = (l+r)/2;
+        if(v[m] == k)
+            return m;
+        else if(v[m] > k)
+            return bs(v, l, m-1, k);
+        else
+            return bs(v, m+1, r, k);
+    }
+    return l;
+}
+
 
 void solve(){
-    um[0] = {0};
-    um[1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-    um[2] = {2, 4, 6, 8, 0};
-    um[3] = {3, 6, 9, 2, 5, 8, 1, 4, 7, 0};
-    um[4] = {4, 8, 2, 6, 0};
-    um[5] = {5, 0};
-    um[6] = {6, 2, 8, 4, 0};
-    um[7] = {7, 4, 1, 8, 5, 2, 9, 6, 3, 0};
-    um[8] = {8, 6, 4, 2, 0};
-    um[9] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-    
-    sm[0] = 0;
-    sm[1] = 45;
-    sm[2] = 20;
-    sm[3] = 45;
-    sm[4] = 20;
-    sm[5] = 5;
-    sm[6] = 20;
-    sm[7] = 45;
-    sm[8] = 20;
-    sm[9] = 45;
-
-    ll n;
-    string a;
+    int n;
     bool debug = false;
-    ll times = 0, tot = 0, reach = 0, v = 10;
-    cin>>n>>a;
-    ll m1 = stoll(a);
-    int m = a[a.size()-1]-'0';
-    if(m == 5){
-        v = 2;
-        times = n/(m1*v);
-    }else{ 
-        v = 10;
-        if(m%2!=0)
-            times = n/(m1*v);
-        else{
-            v = 5;
-            times = n/(m1*v);
+    cin>>n;
+    vector<int> v(n);
+    bool needSort = false;
+    for(int i=0;i<n;i++){
+        cin>>v[i];
+        if(i > 0 && v[i-1]>v[i])
+            needSort = true;
+    }
+    if(needSort) sort(v.begin(), v.end());
+    ll res = 0;
+    ll contE = 0;
+    ll dist = 0;
+    for(int i=1;i<n;i++){
+        dist += v[i] - v[i-1];
+        contE++;
+        if(dist>5){
+            if(v[i]-v[i-1]>5){
+                dist = 0;
+                contE = 0;
+            }else{
+                dist = v[i]-v[i-1];
+                contE = 1;
+            }
+        }else{
+            res = max(res, contE+1);
         }
+        if(debug) cout<<"v[i] - v[i-1]: "<<v[i]-v[i-1]<<"; contE: "<<contE<<"; res: "<<res<<endl;
     }
-    tot = times*sm[m];
-    reach = times*m1*v;
-    if(debug) cout<<"tot: "<<tot<<"; reach: "<<reach<<endl;
-    int i = 0;
-    while(reach+m1<=n && i<um[m].size()){
-        if (debug) cout<<"reach + m1: "<<reach + m1<<endl;
-        tot+=um[m][i];
-        reach+=m1;
-        i++;
-    }
-    cout<<tot<<endl;
-    if(debug) cout<<"----------------------------"<<endl;
+    if(res == 0)
+        res = 1;
+    cout<<res<<endl;      
 }
 
 int main(){
@@ -131,8 +122,8 @@ int main(){
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }
