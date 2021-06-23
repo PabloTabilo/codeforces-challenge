@@ -62,66 +62,69 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
-void pV(vector<int> v){
-    for(int i=0;i<v.size();i++)
-        cout<<v[i]<<" ";
-    cout<<endl;
-}
-
-void loopMe(char ** a, vector<int> &v, int n, int m, int k, bool trs){
-    int t = 0;
-    char w;
-    for(int i=0;i<n;i++){
-        t = 0;
-        for(int j=0;j<m;j++){
-            if(trs)
-                w = a[j][i];
-            else
-                w = a[i][j];
-            if(w == '.'){
-                t++;
-            }else{
-                if(t >= k) v.push_back(t);
-                t = 0;
-            }
-        }
-        if(t>=k) v.push_back(t);
-    }
-}
-
 void solve(){
-    int n, m, k;
-    bool debug = false;
-    cin>>n>>m>>k;
-    char ** a = new char*[n];
-    // consecutives possibles
-    vector<int> pc;
-    for(int i=0;i<n;i++){
-        a[i] = new char[m];
-        for(int j=0;j<m;j++){
-            cin>>a[i][j];
+    int n, q;
+    bool debug = true;
+    cin>>n>>q;
+    // hasta id servidores ocupados
+    stack<int> s;
+    // tiempo max de ocupacion hasta id
+    stack<int> si;
+    // Cola prioridad a small ids, servidores libres
+    ll cTime = 0;
+    int notOcc = n;
+    int s1, s2, last;
+    while(q--){
+        ll ti;
+        int ki, di;
+        cin>>ti>>ki>>di;
+        // Todo liberado, solo agregar
+        if(si.empty() && notOcc>=ki){
+            notOcc-=ki;
+            si.push(ti+di);
+            s.push(ki);
+            cout<<(ki*(ki+1))/2<<endl;
         }
+        // No es posible liberar recursos, pero se tienen disponible
+        // para agregar nuevos
+        else if(si.top() > ti && notOcc >= ki){
+            last = s.top();
+            si.push(ti+di);
+            s.push(ki);
+            notOcc-=ki;
+            s1 = (last*(last+1))/2;
+            s2 = ((last+ki)*(last+ki+1))/2;
+            cout<<s2 - s1<<endl;
+        }
+        // Se liberaron recursos y se agregaron nuevos
+        else if(si.top() <= ti){
+            notOcc+=s.top();
+            s.pop();
+            si.pop();
+            while(!si.empty() && si.top()<=ti){
+                notOcc+=s.top();
+                s.pop();
+                si.pop();
+            }
+            if(notOcc>=ki){
+                if(s.empty()){
+                    notOcc-=ki;
+                    si.push(ti+di);
+                    s.push(ki);
+                    cout<<(ki*(ki+1))/2<<endl;
+                }else{
+                    last = s.top();
+                    notOcc-=ki;
+                    si.push(ti+di);
+                    s.push(ki);
+                    s1 = (last*(last+1))/2;
+                    s2 = ((last+ki)*(last+ki+1))/2;
+                    cout<<s2 - s1<<endl;
+                }
+            }else cout<<-1<<endl;
+        }else
+            cout<<-1<<endl;
     }
-    if(n>1 && m>1){
-        loopMe(a, pc, n, m, k, false); 
-        loopMe(a, pc, m, n, k, true); 
-    }
-    else if(n == 1 && m>1){
-        loopMe(a, pc, n, m, k, false); 
-    }
-    else if(m == 1 && n > 1){
-        loopMe(a, pc, m, n, k, true); 
-    }else{
-        loopMe(a, pc, n, m, k, false);
-    }
-    if (debug) pV(pc);
-    int res = 0;
-    int v;
-    for(int i = 0; i<pc.size();i++)
-        res += pc[i]-k+1;
-    if(n > 1 && m > 1 && k == 1)
-        res/=2;
-    cout<<res<<endl;
 }
 
 int main(){

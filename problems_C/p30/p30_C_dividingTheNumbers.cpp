@@ -62,66 +62,36 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
-void pV(vector<int> v){
+void solve(){
+    int n;
+    bool debug = false;
+    cin>>n;
+    int i = n, j = n-1;
+    bool f = true;
+    vector<int>v;
+    int l=0, r=0;
+    while(i>=1 || j>=1){
+        l+=i;
+        r+=j;
+        if(debug) cout<<"i: "<<i<<"; j: "<<j<<endl;
+        v.push_back(i);
+        i-=2;
+        j-=2;
+        if(j<=0){ 
+            r += (i>=1?i:0);
+            break;
+        }
+        l+=j;
+        r+=i;
+        v.push_back(j);
+        j-=2;
+        i-=2;
+    }
+    cout<<abs(l-r)<<endl;
+    cout<<v.size()<<endl;
     for(int i=0;i<v.size();i++)
         cout<<v[i]<<" ";
     cout<<endl;
-}
-
-void loopMe(char ** a, vector<int> &v, int n, int m, int k, bool trs){
-    int t = 0;
-    char w;
-    for(int i=0;i<n;i++){
-        t = 0;
-        for(int j=0;j<m;j++){
-            if(trs)
-                w = a[j][i];
-            else
-                w = a[i][j];
-            if(w == '.'){
-                t++;
-            }else{
-                if(t >= k) v.push_back(t);
-                t = 0;
-            }
-        }
-        if(t>=k) v.push_back(t);
-    }
-}
-
-void solve(){
-    int n, m, k;
-    bool debug = false;
-    cin>>n>>m>>k;
-    char ** a = new char*[n];
-    // consecutives possibles
-    vector<int> pc;
-    for(int i=0;i<n;i++){
-        a[i] = new char[m];
-        for(int j=0;j<m;j++){
-            cin>>a[i][j];
-        }
-    }
-    if(n>1 && m>1){
-        loopMe(a, pc, n, m, k, false); 
-        loopMe(a, pc, m, n, k, true); 
-    }
-    else if(n == 1 && m>1){
-        loopMe(a, pc, n, m, k, false); 
-    }
-    else if(m == 1 && n > 1){
-        loopMe(a, pc, m, n, k, true); 
-    }else{
-        loopMe(a, pc, n, m, k, false);
-    }
-    if (debug) pV(pc);
-    int res = 0;
-    int v;
-    for(int i = 0; i<pc.size();i++)
-        res += pc[i]-k+1;
-    if(n > 1 && m > 1 && k == 1)
-        res/=2;
-    cout<<res<<endl;
 }
 
 int main(){
