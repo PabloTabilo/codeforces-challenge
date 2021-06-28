@@ -12,6 +12,7 @@
 #include<limits>
 #include<iomanip>
 #include<sstream>
+#include<tuple>
 #include<chrono>
 
 using namespace std;
@@ -62,68 +63,84 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
+class MyLess{
+    public: 
+        bool operator() (const tuple<ll, ll, ll> &t1, const tuple<ll, ll, ll> &t2){
+            if(get<2>(t1) > get<2>(t2)) return true;
+            else return false;
+        }
+};
+
+bool debug = true;
+
+ll sumSerie(ll n, ll a, ll b){
+    return (n*(a+b))/2;
+}
+
+void myEmpty(ll &notOcc, ll ki, ll ti, ll di, priority_queue<tuple<ll,ll,ll>, vector<tuple<ll, ll, ll>>, MyLess > &pq){
+    notOcc-=ki;
+    pq.push({1,ki,ti+di});
+    cout<<sumSerie(ki, 1, ki)<<endl;
+}
+
+void checkChanges(ll &notOcc, ll ki, ll ti, ll di, priority_queue<tuple<ll,ll,ll>, vector<tuple<ll, ll, ll>>, MyLess > &pq){
+    tuple<ll,ll,ll> last = pq.top();
+    pq.push({get<1>(last)+1,get<1>(last)+ki,ti+di});
+    notOcc-=ki;
+    if (debug) cout<<"last: 0-> "<<get<0>(last)<<", 1-> "<<get<1>(last)<<"; 2-> "<<get<2>(last)<<endl;
+    if (debug) cout<<"ki: "<<ki<<"; ti: "<<ti<<"; di: "<<di<<endl;
+    if (debug) cout<<"get<1>(last)+1: "<<get<1>(last)+1<<"; get<1>(last)+ki: "<<get<1>(last)+ki<<endl;
+    //ll s1 = sumSerie(get<1>(last)-get<0>(last)+1, get<0>(last), get<1>(last));
+    //ll s2 = sumSerie(ki,get<1>(last)+1,get<1>(last)+ki);
+    //cout<<s2 - s1<<endl;
+    cout<<sumSerie(ki, get<1>(last)+1, get<1>(last)+ki)<<endl;
+}
+
 void solve(){
     int n, q;
-    bool debug = true;
     cin>>n>>q;
-    // hasta id servidores ocupados
-    stack<int> s;
-    // tiempo max de ocupacion hasta id
-    stack<int> si;
-    // Cola prioridad a small ids, servidores libres
-    ll cTime = 0;
-    int notOcc = n;
-    int s1, s2, last;
+    ll notOcc = n;
+    ll s1, s2;
+    tuple<ll, ll, ll> last;
+    priority_queue <tuple<ll,ll,ll>, vector<tuple<ll, ll, ll>>, MyLess> pq;
     while(q--){
-        ll ti;
-        int ki, di;
+        ll ti, ki, di;
         cin>>ti>>ki>>di;
         // Todo liberado, solo agregar
-        if(si.empty() && notOcc>=ki){
-            notOcc-=ki;
-            si.push(ti+di);
-            s.push(ki);
-            cout<<(ki*(ki+1))/2<<endl;
-        }
-        // No es posible liberar recursos, pero se tienen disponible
-        // para agregar nuevos
-        else if(si.top() > ti && notOcc >= ki){
-            last = s.top();
-            si.push(ti+di);
-            s.push(ki);
-            notOcc-=ki;
-            s1 = (last*(last+1))/2;
-            s2 = ((last+ki)*(last+ki+1))/2;
-            cout<<s2 - s1<<endl;
-        }
-        // Se liberaron recursos y se agregaron nuevos
-        else if(si.top() <= ti){
-            notOcc+=s.top();
-            s.pop();
-            si.pop();
-            while(!si.empty() && si.top()<=ti){
-                notOcc+=s.top();
-                s.pop();
-                si.pop();
+        if(pq.empty() && notOcc>=ki){
+            myEmpty(notOcc, ki, ti, di, pq);
+        }else{
+            if(debug) cout<<"get<2>(pq.top()) :"<<get<2>(pq.top())<<"; ti: "<<ti<<endl;
+            // No es posible liberar recursos, pero se tienen disponible
+            // para agregar nuevos
+            if(get<2>(pq.top()) > ti && notOcc >= ki){
+                checkChanges(notOcc, ki, ti, di, pq);
             }
-            if(notOcc>=ki){
-                if(s.empty()){
-                    notOcc-=ki;
-                    si.push(ti+di);
-                    s.push(ki);
-                    cout<<(ki*(ki+1))/2<<endl;
-                }else{
-                    last = s.top();
-                    notOcc-=ki;
-                    si.push(ti+di);
-                    s.push(ki);
-                    s1 = (last*(last+1))/2;
-                    s2 = ((last+ki)*(last+ki+1))/2;
-                    cout<<s2 - s1<<endl;
+            // Se liberaron recursos y se agregaron nuevos
+            else if(get<2>(pq.top()) <= ti){
+                if (debug) cout<<"found a total time less than init qi on ti -> ki: "<<ki<<"; ti: "<<ti<<"; di: "<<di<<endl;
+                last = pq.top();
+                if (debug) cout<<"With  this last: 0-> "<<get<0>(last)<<", 1-> "<<get<1>(last)<<"; 2-> "<<get<2>(last)<<endl;
+                notOcc+=get<1>(last) - get<0>(last)+1;
+                if (debug) cout<<"notOcc: "<<notOcc<<endl;
+                pq.pop();
+                if (!pq.empty())
+                    last = pq.top();
+                while(!pq.empty() && get<2>(last)<=ti){
+                    notOcc+=get<1>(last) - get<0>(last)+1;
+                    pq.pop();
+                    last = pq.top();
                 }
-            }else cout<<-1<<endl;
-        }else
-            cout<<-1<<endl;
+                if(notOcc>=ki){
+                    if(pq.empty()){
+                        myEmpty(notOcc, ki, ti, di, pq);
+                    }else{
+                        checkChanges(notOcc, ki, ti, di, pq);
+                    }
+                }else cout<<-1<<endl;
+            }else
+                cout<<-1<<endl;
+        }
     }
 }
 
