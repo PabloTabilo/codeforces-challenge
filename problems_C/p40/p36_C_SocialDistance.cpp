@@ -34,7 +34,6 @@ typedef unsigned long int uint32;
 typedef long long ll;
 typedef unsigned long long int ull;
 typedef long double lld;
-typedef pair<vector<int>, int> myPair;
 
 #ifndef ONLINE_JUDGE
 #define debug(x) cerr << #x << " "; _print(x); cerr << endl;
@@ -64,91 +63,58 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
-class MyLess{
-    public: 
-        bool operator() (const myPair &t1, const myPair &t2){
-            if(t1.second > t2.second) return true;
-            else return false;
-        }
-};
 
-bool debug = false;
-
-ll sumSerie(ll n, ll a, ll b){
-    return (n*(a+b))/2;
-}
-
-void addMe(ll ki, ll s_ti_di, priority_queue<myPair, vector<myPair>, MyLess > &pq, priority_queue<int, vector<int>, greater<int> > &pn){
-    vector<int> v;
-    int i = 1;
-    int s = 0;
-    if(pn.size()<ki)
-        cout<<-1<<endl;
-    else{
-        while(i <= ki){
-            s+=pn.top();
-            v.push_back(pn.top());
-            if(debug)cout<<"ki: "<<ki<<"; s : "<<s<<"; pn.top(): "<<pn.top()<<endl;
-            pn.pop();
-            i++;
-        }
-        pq.push({v, s_ti_di});
-        cout<<s<<endl;
+void check(string &s1, char w, int &s, bool &isOne, int i, int k){
+    if(isOne && s > 0){
+        s1[i] = '2';
+        s--;
     }
-}
-
-
-void recuperate(vector<int> &v, priority_queue<int, vector<int>, greater<int> > &pn){
-    int n = v.size();
-    int i = 0;
-    while(i < n){
-        if(debug)cout<<"v[i]: "<<v[i]<<endl;
-        pn.push(v[i]);
-        i++;
+    if(s == 0){
+        isOne = false;
+        s = k;
+    }
+    if(w=='1'){
+        isOne = true;
     }
 }
 
 void solve(){
-    int n, q;
-    cin>>n>>q;
-    ll notOcc = n;
-    ll s1, s2;
-    myPair last;
-    priority_queue <myPair, vector<myPair>, MyLess> pq;
-    priority_queue <int, vector<int>, greater<int> > pn;
-    for(int i = 1; i<=n;i++)
-        pn.push(i);
-    while(q--){
-        ll ti, ki, di;
-        cin>>ti>>ki>>di;
-        // Todo liberado, solo agregar
-        if(pq.empty()){
-            addMe(ki, ti+di, pq, pn);
-        }else{
-            last = pq.top();
-            if(debug) cout<<"last: "<<last.second<<"; ti: "<<ti<<endl;
-            // No es posible liberar recursos, pero se tienen disponible
-            // para agregar nuevos
-            if(last.second > ti && pn.size()>=ki){
-                addMe(ki, ti+di, pq, pn);
-            }
-            // Se liberaron recursos y se agregaron nuevos
-            else if(last.second <= ti){
-                pq.pop();
-                if(debug) cout<<"last: "<<last.second<<"; ti: "<<ti<<endl;
-                recuperate(last.first, pn);
-                if (!pq.empty())
-                    last = pq.top();
-                while(!pq.empty() && last.second<=ti){
-                    if(debug) cout<<"last: "<<last.second<<"; ti: "<<ti<<endl;
-                    recuperate(last.first, pn);
-                    pq.pop();
-                    last = pq.top();
-                }
-                addMe(ki, ti+di, pq, pn);
-            } else cout<<-1<<endl;
-        }
+    int n, k;
+    bool debug = false;
+    cin>>n>>k;
+    cin.ignore();
+    int res = 0;
+    string s1;
+    getline(cin, s1);
+    char w;
+    int i = 0;
+    int s = k;
+    bool isOne = false;
+    while(i < n){
+        w=s1[i];
+        if(debug) cout<<"w, i :"<<w<<", "<<i<<endl;
+        check(s1, w, s, isOne, i, k);
+       i++; 
     }
+    isOne = false;
+    s = k;
+    i = n-1;
+    while(i >= 0){
+        w=s1[i];
+        if(debug) cout<<"w, i :"<<w<<", "<<i<<endl;
+        check(s1, w, s, isOne, i, k);
+       i--; 
+    }
+    if(debug) cout<<"s1: "<<s1<<endl;
+    i = 0;
+    while(i<n){
+        if(s1[i] == '0'){ 
+            res++;
+            i+=k;
+        }
+    i++;
+    }
+    cout<<res<<endl;
 }
 
 int main(){
@@ -161,8 +127,8 @@ int main(){
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
     int t;
-    //cin>>t;
-    t = 1;
+    cin>>t;
+    //t = 1;
     while(t--){
         solve();
     }
