@@ -63,22 +63,34 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
+bool myXor(vector<int> a, int maxV){
+    int n = a.size();
+    int xorv = a[0];
+    for(int i = 1; i<n;i++){
+        xorv ^= a[i];
+    }
+    return xorv == maxV;
+}
+
 void solve(){
     int n;
-    bool debug = false;
     cin>>n;
-    int a1, an, a;
-    for(int i = 0; i<n;i++){
+    unsigned long long int tot, xorVal, a;
+    tot = 0;
+    xorVal = 0;
+    a = 0;
+    for(int i = 0; i<n; i++){
         cin>>a;
-        if(i == 0){
-            a1 = a;
-        }
-        if(i == n-1){
-            an = a;
-        }
+        tot+=a;
+        xorVal^=a;
     }
-    if(a1 < an) cout<<"YES";
-    else cout<<"NO";
+    if(tot != 2*xorVal){
+        cout<<2<<endl;
+        cout<<xorVal<<" "<<xorVal+tot;
+    }else{
+        cout<<0<<endl;
+        cout<<" ";
+    }
     cout<<endl;
 }
 

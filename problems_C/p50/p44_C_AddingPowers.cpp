@@ -63,21 +63,72 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
+
+pair<ll, ll> maxPower(long long a, long long k){
+    ll res = 1;
+    ll nTimes = 0;
+    while(k*res <= a){
+        res*=k;
+        nTimes++;
+    }
+    return make_pair(res, nTimes);
+}
+
 void solve(){
-    int n;
+    int n, k;
+    cin>>n>>k;
+    vector <ll> A(n);
+    vector <bool> maxExpo;
+    ll maxV = 0;
+    bool existOne = false;
+    bool pos = true;
     bool debug = false;
-    cin>>n;
-    int a1, an, a;
     for(int i = 0; i<n;i++){
-        cin>>a;
-        if(i == 0){
-            a1 = a;
+        cin>>A[i];
+        if(A[i] == 1) existOne = true;
+        maxV = max(maxV, A[i]);
+    }
+    ll p = 1; 
+    ll nv, ac, idx; 
+    ll howManyFalses = 0;
+    while(p*k <= maxV){
+        howManyFalses++;
+        maxExpo.push_back(false);
+        p*=k;
+    }
+    howManyFalses++;
+    maxExpo.push_back(false);
+    if (debug){
+        cout<<"maxExpo: ";
+        for(int i= 0; i<maxExpo.size(); i++){
+            cout<<maxExpo[i]<<" ";
         }
-        if(i == n-1){
-            an = a;
+    cout<<endl;
+    }
+    if(debug) cout<<"p init: "<<p<<endl;
+    for(int i = 0; i<n; i++){
+        if(A[i] != 0){
+            nv = A[i];
+            pair<ll, ll> myp = maxPower(A[i], k);
+            p = myp.first;
+            idx = myp.second;
+            ac = 0;
+            while(p>=1 && nv > 0){
+                if(debug) cout<<"p: "<<p<<"; idx: "<<idx<<"; nv: "<<nv<<endl;
+                if(!maxExpo[idx] && ac+p<=A[i]){
+                    howManyFalses--;
+                    ac += p;
+                    nv -= p;
+                    maxExpo[idx] = true;
+                }
+                idx--;
+                p/=k;
+            }
+            if(debug) cout<<"----------------------------------"<<endl;
+            if (nv != 0) pos = false;
         }
     }
-    if(a1 < an) cout<<"YES";
+    if(pos) cout<<"YES";
     else cout<<"NO";
     cout<<endl;
 }

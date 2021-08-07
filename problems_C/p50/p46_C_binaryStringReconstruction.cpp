@@ -64,21 +64,59 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
 void solve(){
-    int n;
+    string s;
+    int x;
+    getline(cin, s);
+    cin>>x;
+    cin.ignore();
+    int n = s.size();
     bool debug = false;
-    cin>>n;
-    int a1, an, a;
+    vector<char>w(n);
+    for(int i=0;i<n;i++){
+        w[i] = '1';
+    }
     for(int i = 0; i<n;i++){
-        cin>>a;
-        if(i == 0){
-            a1 = a;
-        }
-        if(i == n-1){
-            an = a;
+        if(s[i] == '0'){
+            if(i+1 > x){
+                w[i-x] = '0';
+            }
+            if(i + 1 + x <= n){
+                w[i+x] = '0';
+            }
         }
     }
-    if(a1 < an) cout<<"YES";
-    else cout<<"NO";
+    vector<char> s1(n);
+    bool st1;
+    bool st2;
+    for(int i=0;i<n;i++){
+        st1 = false;
+        st2 = false;
+        if(i+1 > x && w[i-x] == '1'){
+            s1[i]+='1';
+            st1 = true;
+        }
+        if(i+1+x <= n && w[i+x] == '1' && !st1){
+            s1[i]+='1';
+            st2 = true;
+        }
+        if(!st1 && !st2){
+            s1[i]+='0';
+        }
+    }
+    string s1s(s1.begin(), s1.end());
+    if(s1s != s){
+        cout<<-1;
+    }else{
+        for(int i=0;i<n;i++) cout<<w[i];
+    }
+    if(debug){
+        cout<<endl;
+        cout<<"w: ";
+        for(int i=0;i<n;i++) cout<<w[i];
+        cout<<endl;
+        cout<<"s: "<<s<<endl;
+        cout<<"s1s: "<<s1s<<endl;
+    }
     cout<<endl;
 }
 
@@ -93,6 +131,7 @@ int main(){
     //freopen("output.txt", "w", stdout);
     int t;
     cin>>t;
+    cin.ignore();
     //t = 1;
     while(t--){
         solve();

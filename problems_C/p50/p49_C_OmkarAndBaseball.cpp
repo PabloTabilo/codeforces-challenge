@@ -65,21 +65,53 @@ ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} retur
 
 void solve(){
     int n;
-    bool debug = false;
+    int a;
+    int k = 1;
+    bool needSort = false;
+    int res = 0;
     cin>>n;
-    int a1, an, a;
-    for(int i = 0; i<n;i++){
+    vector<int> A(n);
+    vector<bool> Ab(n);
+    for(int i=0;i<n;i++){
         cin>>a;
-        if(i == 0){
-            a1 = a;
+        A[i] = a;
+        if(a != k && !needSort){
+            needSort = true;
         }
-        if(i == n-1){
-            an = a;
-        }
+        Ab[i] = a!=k;
+        k++;
     }
-    if(a1 < an) cout<<"YES";
-    else cout<<"NO";
-    cout<<endl;
+    if(needSort){
+        int i = 0;
+        int j = n-1;
+        while(i < j){
+            if(!Ab[i]){
+                i++;
+            }else if(!Ab[j]){
+                j--;
+            }else{
+                break;
+            }
+        }
+        int size_ij = j - i + 1;
+        int sum_ij = 0;
+        for(int k = i; k <= j; k++){
+            if(Ab[k]) sum_ij++;
+        }
+        debug(A);
+        debug(Ab);
+        debug(i);
+        debug(j);
+        debug(sum_ij);
+        debug(size_ij);
+        if(size_ij == sum_ij)
+            cout<<1<<endl;
+        else
+            // Can be 1 or 2
+            cout<<2<<endl;
+    }else
+        cout<<0<<endl;
+
 }
 
 int main(){

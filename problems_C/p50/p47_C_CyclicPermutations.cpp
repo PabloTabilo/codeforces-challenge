@@ -64,22 +64,20 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
 void solve(){
-    int n;
-    bool debug = false;
+    ll n, res = 1, fact = 1;
     cin>>n;
-    int a1, an, a;
-    for(int i = 0; i<n;i++){
-        cin>>a;
-        if(i == 0){
-            a1 = a;
-        }
-        if(i == n-1){
-            an = a;
-        }
+    for(int i = 1; i<=n-1;i++){
+        res *= 2;
+        fact *= i;
+        fact %= MOD;
+        res %= MOD;
     }
-    if(a1 < an) cout<<"YES";
-    else cout<<"NO";
-    cout<<endl;
+    fact *= n;
+    fact %= MOD;
+    fact -= res;
+    fact %= MOD;
+    if(fact < 0) fact += MOD;
+    cout<<fact<<endl;
 }
 
 int main(){
@@ -92,8 +90,8 @@ int main(){
     //freopen("input.txt", "r", stdin);
     //freopen("output.txt", "w", stdout);
     int t;
-    cin>>t;
-    //t = 1;
+    //cin>>t;
+    t = 1;
     while(t--){
         solve();
     }

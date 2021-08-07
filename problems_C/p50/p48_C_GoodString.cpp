@@ -63,23 +63,47 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 /*---------------------------------------------------------------------------------------------------------------------------*/
 ll gcd(ll a, ll b) {if (b > a) {return gcd(b, a);} if (b == 0) {return a;} return gcd(b, a % b);}
 
-void solve(){
-    int n;
-    bool debug = false;
-    cin>>n;
-    int a1, an, a;
-    for(int i = 0; i<n;i++){
-        cin>>a;
-        if(i == 0){
-            a1 = a;
-        }
-        if(i == n-1){
-            an = a;
+bool cmp(pair<string, int>&a, pair<string, int>&b){
+    return a.second < b.second;
+}
+
+void sortMe(map<string, int>&M){
+    vector<pair<string, int> >A;
+    for(auto & it:M){
+        A.push_back(it);
+    }
+    sort(A.begin(), A.end(), cmp);
+    for(auto & it: A){
+        cout<<it.first<<" "<<it.second<<endl;
+    }
+}
+
+int getRes(string & s, int x, int y){
+    int res = 0;
+    for(auto c : s){
+        if(c - '0' == x){
+            res++;
+            swap(x, y);
         }
     }
-    if(a1 < an) cout<<"YES";
-    else cout<<"NO";
-    cout<<endl;
+    if(x!=y && res%2 == 1){
+        res--;
+    }
+    return res;
+}
+
+void solve(){
+    string s;
+    getline(cin, s);
+    int n = s.size();
+    int ans = 0;
+    for(int i = 0; i<10; i++){
+        for(int j = 0; j<10; j++){
+            ans = max(ans, getRes(s, i, j));
+        }
+    }
+    cout<<n - ans<<endl;
+
 }
 
 int main(){
@@ -93,6 +117,7 @@ int main(){
     //freopen("output.txt", "w", stdout);
     int t;
     cin>>t;
+    cin.ignore();
     //t = 1;
     while(t--){
         solve();
